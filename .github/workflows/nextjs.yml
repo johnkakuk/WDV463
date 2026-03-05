@@ -42,7 +42,7 @@ jobs:
             echo "command=install" >> $GITHUB_OUTPUT
             echo "runner=yarn" >> $GITHUB_OUTPUT
             exit 0
-          elif [ -f "${{ github.workspace }}/my-app/package.json" ]; then
+          elif [ -f "${{ github.workspace }}/my-app/package-lock.json" ] || [ -f "${{ github.workspace }}/my-app/npm-shrinkwrap.json" ]; then
             echo "manager=npm" >> $GITHUB_OUTPUT
             echo "command=ci" >> $GITHUB_OUTPUT
             echo "runner=npx --no-install" >> $GITHUB_OUTPUT
@@ -56,6 +56,10 @@ jobs:
         with:
           node-version: "20"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
+          cache-dependency-path: |
+            my-app/package-lock.json
+            my-app/npm-shrinkwrap.json
+            my-app/yarn.lock
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:
